@@ -125,6 +125,7 @@ def main():
                     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
                 else:
                     screen = pygame.display.set_mode((WIDTH, HEIGHT))
+                    screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -134,7 +135,7 @@ def main():
         mouse_particles.add_particles(mouse_pos, 5, 10)
 
         for particle_type in particle_types:
-            particle_type.update_particles(((0, 0), (WIDTH, HEIGHT)), dt=dt)
+            particle_type.update_particles(((0, 0), (screen.get_width(), screen.get_height())), dt=dt)
 
         screen.fill('black')
         for particle_type in particle_types:
