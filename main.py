@@ -51,24 +51,24 @@ class ParticleType:
         self.colors = colors
         self.scale_type = scale_type
 
-    def get_new_particle(self, spawn_range=((0, 0), (0, 0)), offset=0, colors=None):
+    def get_new_particle(self, spawn_range: tuple = ((0, 0), (0, 0)), offset: int = 0):
         # spawn_range = (min_pos, max_pos) | ((min_x, min_y), (max_x, max_y))
         if isinstance(spawn_range[0], tuple) and isinstance(spawn_range[1], tuple):
             pos = (random.randint(spawn_range[0][0] - offset, spawn_range[1][0] + offset), random.randint(spawn_range[0][1] - offset, spawn_range[1][1] + offset))
         elif isinstance(spawn_range[0], int) and isinstance(spawn_range[1], int):
             pos = spawn_range[0] + random.randint(-offset, offset), spawn_range[1] + random.randint(-offset, offset)
-        vel = [random.randint(self.vel_range[0][0], self.vel_range[1][0]), random.randint(self.vel_range[0][1], self.vel_range[1][1]), random.randint(self.vel_range[0][1], self.vel_range[1][1])]
+        vel = [random.randint(self.vel_range[0][0], self.vel_range[1][0]), random.randint(self.vel_range[0][1], self.vel_range[1][1])]
         lifetime = random.randint(min(self.lifetime_range), max(self.lifetime_range))
         color = random.choice(self.colors)
         particle = Particle(pos, vel, lifetime, color, self.scale_type)
         return particle
 
-    def add_particles(self, spawn_range=((0, 0), (0, 0)), offset=0, amount=1):
+    def add_particles(self, spawn_range: tuple = ((0, 0), (0, 0)), amount: int = 1, offset: int = 0):
         for i in range(amount):
-            particle = self.get_new_particle(spawn_range)
+            particle = self.get_new_particle(spawn_range, offset)
             self.particles.append(particle)
 
-    def update_particles(self, pos_range, dt=1):
+    def update_particles(self, pos_range: tuple, dt: int = 1):
         if not self.particles:
             return
         for particle in self.particles[:]:
@@ -92,7 +92,6 @@ def get_dt(ms):
 
 
 def main():
-    print(pygame.colordict.THECOLORS)
     pygame.font.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
@@ -116,6 +115,7 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
+
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_f:
                     full_screen = not full_screen
@@ -125,12 +125,13 @@ def main():
                     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
                 else:
                     screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    click_particles.add_particles(event.pos, 5, 20)
+                    click_particles.add_particles(event.pos, 20, 5)
                 
         mouse_pos = pygame.mouse.get_pos()
-        mouse_particles.add_particles(mouse_pos, 10, 5)
+        mouse_particles.add_particles(mouse_pos, 5, 10)
 
         for particle_type in particle_types:
             particle_type.update_particles(((0, 0), (WIDTH, HEIGHT)), dt=dt)
