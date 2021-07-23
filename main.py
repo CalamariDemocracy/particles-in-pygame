@@ -105,8 +105,11 @@ def main():
     mouse_particles = ParticleType(((-2, -2), (2, 2)), (4, 24), ('red', ), 0.2)
     click_particles = ParticleType(((-4, -4), (4, 4)), (24, 48), particle_colors, 0)
     particle_types = (mouse_particles, click_particles)
+
     pygame.mouse.set_visible(False)
     font = pygame.font.Font(None, 32)
+
+    left_click = False
 
     while True:
         ms = clock.tick(FPS)
@@ -129,11 +132,17 @@ def main():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    click_particles.add_particles(event.pos, 20, 5)
-                
+                    left_click = True
+            if event.type == pygame.MOUSEBUTTONUP:
+                if event.button == 1:
+                    left_click = False
+                            
         mouse_pos = pygame.mouse.get_pos()
         mouse_particles.add_particles(mouse_pos, 5, 10)
 
+        if left_click:
+            click_particles.add_particles(mouse_pos, 20, 5)
+        
         for particle_type in particle_types:
             particle_type.update_particles(((0, 0), (screen.get_width(), screen.get_height())), dt=dt)
 
